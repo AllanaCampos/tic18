@@ -47,9 +47,9 @@ int main(){
     civic->acelerar(30);
     civic->frear();
 
-    Hatch carro1;
-    carro1.setNumPortas(4);
-    carro1.imprimirNumPortas();
+    Hatch *carro1;
+    carro1->setNumPortas(4);
+    carro1->imprimirNumPortas();
     return 0;
 }
 

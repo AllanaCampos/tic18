@@ -4,18 +4,20 @@
 using namespace std;
 
 class Carro{
+    protected:
     int numPortas;
+    bool numPortasIsValid(int _numPortas){
+        bool flag = false;
+        flag = (_numPortas >= 1 && _numPortas <= 7);
+        return flag;
+    }
     public:
     string tipo;
     string cor;
     string placa;
     
     void setNumPortas (int _numPortas){
-        if(_numPortas < 1){
-            cout << "Numero invalido de portas, atribuindo 1";
-            this->numPortas = 1;
-        }
-        else this->numPortas = _numPortas;
+        this->numPortas = (this->numPortasIsValid(_numPortas)) ? _numPortas : 1;
     }
     int getNumPortas(){
         return this->numPortas;
@@ -28,7 +30,13 @@ class Carro{
         cout << "Freando" << endl;
     }
 };
+class Hatch : public Carro{
+    public:
+    void imprimirNumPortas(){
+        cout << numPortas << endl;
+    }
 
+};
 int main(){
     Carro *civic = new Carro();
     civic->tipo = "sedan";
@@ -38,6 +46,10 @@ int main(){
     cout << "O numero de portas e: " << civic->getNumPortas() << endl;
     civic->acelerar(30);
     civic->frear();
+
+    Hatch carro1;
+    carro1.setNumPortas(4);
+    carro1.imprimirNumPortas();
     return 0;
 }
 

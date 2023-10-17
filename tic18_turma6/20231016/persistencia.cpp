@@ -5,11 +5,23 @@
 using namespace std;
 
 class Contato{
+    static int cont;
     string nome;
     string telefone;
     string email;
+    int cod;
 
     public:
+    Contato(){
+        cod = Contato::getContador();
+        Contato::incContador();
+    }
+    static int getContador(){
+        return Contato::cont;
+    }
+    static void incContador(){
+        Contato::cont+=1;
+    }
     //obtendo nome do contato
     string getNome(){
         return this->nome;
@@ -34,6 +46,33 @@ class Contato{
     void setEmail(string email){
         this->email = email;
     }
+    /*void makeFriend(Contato * amigo){
+        amigos.push_back(amigo);
+        if(amigo->searchFriend(this)){
+            amigo->makeFriend(this);
+        }
+    }
+
+    bool searchFriend(Contato * amigo){
+        bool existe = false;
+        for (Contato * c : this->amigos){
+            if(c == amigo){
+                existe = true;
+                break;
+            }
+        }
+        return existe;
+    }
+    void listarAmigos(){
+        int contador = 0;
+        for(Contato *amigo:this->amigos){
+            contador++;
+            cout << "Amigo " << contador << endl; //indicando qual contato será informado
+            cout << "Nome: " << amigo->getNome() << endl; //imprimindo o nome do contato
+            cout << "Telefone: " << amigo->getTelefone() << endl; //imprimindo o telefone do contato
+            cout << "Email: " << amigo->getEmail() << endl;
+        }
+    }*/
     //criando um novo contato 
     static Contato * criar(){
         /*como esta sendo declarado um ponteiro para o contato,
@@ -68,9 +107,48 @@ class Contato{
             cout << "Email: " << c->getEmail() << endl; //imprimindo o email do contato
         }
     }
-
+    static Contato * pesquisarContato(vector<Contato*> contatos, int codigo){
+        for(Contato *contato: contatos){
+            if(contato->getContador() == codigo){
+                return contato;
+            }
+        }
+        cout << "Contato não existe" <<endl;
+    }
+    //listando amigos
+    void listarAmigos(vector<Amizade*> amizades, vector<Contato*> contatos){
+        cout << "<----------Meus Amigos---------->" << endl;
+        for(Amizade *amigos: amizades){
+            Contato *contAmigo;
+            if(amigos->getCod1() == this->cod){
+                contAmigo = Contato::pesquisarContato(contatos, amigos->getCod2());
+                cout << "Nome: " << contAmigo->getNome() << endl; //imprimindo o nome do contato
+                cout << "Telefone: " << contAmigo->getTelefone() << endl; //imprimindo o telefone do contato
+                cout << "Email: " << contAmigo->getEmail() << endl; //imprimindo o email do contato
+            }
+            if(amigos->getCod2() == this->cod){
+                contAmigo = Contato::pesquisarContato(contatos, amigos->getCod2());
+                cout << "Nome: " << contAmigo->getNome() << endl; //imprimindo o nome do contato
+                cout << "Telefone: " << contAmigo->getTelefone() << endl; //imprimindo o telefone do contato
+                cout << "Email: " << contAmigo->getEmail() << endl; //imprimindo o email do contato
+            }
+        }
+    }
 };
-
+class Amizade{
+    int cod1, cod2;
+    public:
+    Amizade(int _cod1, int _cod2){
+        this->cod1 = _cod1;
+        this->cod2 = _cod2;
+    }
+    int getCod1(){
+        return this->cod1;
+    }
+    int getCod2(){
+        return this->cod2;
+    }
+};
 class Persistencia{
     public:
     //metodo que divide uma string em duas e retorna a segunda parte
@@ -125,12 +203,14 @@ class Persistencia{
 };
 int main(){
     vector<Contato *> contatos = Persistencia::getLista(); //declarando o vector de contatos e adicionando os contatos existentes na lista
+    vector<Amizade *> amizades;
     char opcao; //declarando uma variavel auxiliar do tipo char
     do{
         cout << "<------------Menu------------>" << endl; //iniciando o menu
         cout << "1- Adicionar contato" << endl; //opcao 1
         cout << "2- Listar contatos" << endl; //opcao 2
         cout << "3- Salvar lista de contatos" << endl; //opcao 3
+        cout << "4- Fazer amizade" << endl;
         cout << "0- Sair" << endl; //opcao 0
         cin >> opcao; //obtendo a opcao desejada pelo usuario
         if(opcao == '1'){ //caso a opcao seja 1
@@ -142,6 +222,14 @@ int main(){
         }
         if(opcao == '3'){ //caso a opcao seja 3
             Persistencia::salvaLista(contatos); //salvando a lista de contatos em um arquivo de texto
+        }
+        if(opcao == '4'){ //caso a opcao seja 4
+            int a, b;
+            cout << "Digite o codigo dos contatos que farao amizade" << endl;
+            cin >> a >> b;
+            Amizade *amigos = new Amizade(a, b);
+            //contatos.at(a-1)->makeFriend(contatos.at(b-1));
+            //contatos.at(a-1)->listarAmigos();
         }
     }while(opcao != '0'); //caso a opcao seja 0 o loop é encerrado, caso contrario o menu reaparece
     return 0;

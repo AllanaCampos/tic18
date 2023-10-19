@@ -52,4 +52,3 @@ int main(){
     carro1->imprimirNumPortas();
     return 0;
 }
-
